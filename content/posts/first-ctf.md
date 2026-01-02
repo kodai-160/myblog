@@ -4,9 +4,7 @@ date: "2024-05-20"
 ctf: "Beginner CTF 2024"
 tags: ["review", "web", "crypto"]
 summary: "初参加CTFで得た気づきと今後の学習方針。"
-achievements:
-  - "チーム順位 42位 / 450"
-  - "webカテゴリで初血"
+
 ---
 
 ## 参加の目的

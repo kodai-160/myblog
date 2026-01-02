@@ -38,8 +38,6 @@ date: "2024-06-01"
 ctf: "CTF名"
 tags: ["pwn", "web"]
 summary: "概要の一文"
-achievements:
-  - "チーム順位 42位"
 ---
 ```
 

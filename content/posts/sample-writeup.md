@@ -4,8 +4,6 @@ date: "2024-06-01"
 ctf: "pwnable.kr"
 tags: ["pwn", "beginner", "linux"]
 summary: "file descriptorの仕様を使ったシンプルなpwn問題。"
-achievements:
-  - "pwnカテゴリ初ソルブ"
 ---
 
 ## 問題概要

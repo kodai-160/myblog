@@ -49,6 +49,7 @@ const layout = ({ title, description, content, config }) => `<!doctype html>
     <meta name="description" content="${description}" />
     <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
+    <script src="/app.js" defer></script>
   </head>
   <body>
     <header>
@@ -74,23 +75,21 @@ const renderTags = (tags = []) =>
     : "";
 
 const buildIndex = (posts, config) => {
-  const achievements = posts
-    .flatMap((post) =>
-      (post.achievements || []).map((item) => ({
-        title: post.title,
-        ctf: post.ctf,
-        date: post.date,
-        item
-      }))
-    )
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
+  const categories = [...new Set(posts.flatMap((post) => post.tags || []))].sort();
 
   const content = `
+    <section class="filters">
+      <h2>カテゴリ</h2>
+      <div class="tags" data-tag-filters>
+        <button class="tag is-active" type="button" data-tag="all">すべて</button>
+        ${categories.map((tag) => `<button class="tag" type="button" data-tag="${tag}">${tag}</button>`).join("")}
+      </div>
+    </section>
     <section class="grid">
       ${posts
         .map(
           (post) => `
-            <article class="card">
+            <article class="card" data-tags="${(post.tags || []).join(",")}">
               <h2><a href="${post.url}">${post.title}</a></h2>
               <div class="meta">${formatDate(post.date)} · ${post.ctf}</div>
               <p>${post.summary}</p>
@@ -100,21 +99,7 @@ const buildIndex = (posts, config) => {
         )
         .join("")}
     </section>
-    <section style="margin-top: 48px;">
-      <h2>実績一覧</h2>
-      <div class="card">
-        <ul>
-          ${achievements
-            .map(
-              (achievement) =>
-                `<li><strong>${achievement.ctf}</strong> (${formatDate(
-                  achievement.date
-                )}): ${achievement.item} <em>— ${achievement.title}</em></li>`
-            )
-            .join("")}
-        </ul>
-      </div>
-    </section>
+    <p class="empty-state" hidden>該当するwriteupがありません。</p>
   `;
 
   return layout({
