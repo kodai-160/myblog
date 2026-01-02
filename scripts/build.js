@@ -162,15 +162,21 @@ const readPosts = async () => {
         const { data, content } = matter(raw);
         const slug = data.slug ?? slugify(path.basename(file, ".md"));
         const url = `/posts/${slug}/`;
+        
+        let tags = data.tags || [];
+        if (typeof tags === "string") {
+          tags = tags.split(",").map(t => t.trim());
+        }
+        
         return {
           ...data,
+          tags,
           slug,
           url,
           html: md.render(content)
         };
       })
   );
-
   return posts.sort((a, b) => new Date(b.date) - new Date(a.date));
 };
 

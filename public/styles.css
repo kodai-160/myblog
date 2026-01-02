@@ -195,3 +195,7 @@ td {
     padding: 24px;
   }
 }
+
+/* 隠す用のユーティリティ */
+.card.is-hidden { display: none !important; }
+.empty-state.is-hidden { display: none !important; }
