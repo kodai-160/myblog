@@ -1,0 +1,17 @@
+{
+  "name": "ctf-writeup-blog",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "node scripts/dev.js"
+  },
+  "dependencies": {
+    "chokidar": "^3.6.0",
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^14.1.0",
+    "markdown-it-katex": "^2.0.3",
+    "ws": "^8.18.0"
+  }
+}
