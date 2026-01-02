@@ -47,6 +47,10 @@ header {
   padding: 0 20px 48px;
 }
 
+.hero-container {
+  padding: 0 20px;
+}
+
 .hero {
   display: flex;
   flex-direction: column;
@@ -181,6 +185,10 @@ td {
 
   .container {
     padding: 0 16px 40px;
+  }
+
+  .hero-container {
+    padding: 0 16px;
   }
 
   .article {

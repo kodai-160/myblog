@@ -53,7 +53,7 @@ const layout = ({ title, description, content, config }) => `<!doctype html>
   </head>
   <body>
     <header>
-      <div class="container hero">
+      <div class="container hero hero-container">
         <a href="/" aria-label="${config.title}">
           <strong>${config.title}</strong>
         </a>
@@ -69,6 +69,8 @@ const layout = ({ title, description, content, config }) => `<!doctype html>
   </body>
 </html>`;
 
+const normalizeTag = (tag = "") => slugify(String(tag).trim());
+
 const renderTags = (tags = []) =>
   tags.length
     ? `<div class="tags">${tags.map((tag) => `<span class="tag">#${tag}</span>`).join("")}</div>`
@@ -82,14 +84,19 @@ const buildIndex = (posts, config) => {
       <h2>カテゴリ</h2>
       <div class="tags" data-tag-filters>
         <button class="tag is-active" type="button" data-tag="all">すべて</button>
-        ${categories.map((tag) => `<button class="tag" type="button" data-tag="${tag}">${tag}</button>`).join("")}
+        ${categories
+          .map(
+            (tag) =>
+              `<button class="tag" type="button" data-tag="${normalizeTag(tag)}">${tag}</button>`
+          )
+          .join("")}
       </div>
     </section>
     <section class="grid">
       ${posts
         .map(
           (post) => `
-            <article class="card" data-tags="${(post.tags || []).join(",")}">
+            <article class="card" data-tags="${(post.tags || []).map(normalizeTag).join(",")}">
               <h2><a href="${post.url}">${post.title}</a></h2>
               <div class="meta">${formatDate(post.date)} · ${post.ctf}</div>
               <p>${post.summary}</p>
