@@ -1,0 +1,33 @@
+name: Build and deploy to user site
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      # dist を公開用リポジトリへ反映
+      - name: Deploy dist to kodai-160.github.io repo
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.USER_SITE_TOKEN }}
+          external_repository: kodai-160/kodai-160.github.io
+          publish_branch: main
+          publish_dir: ./dist
+          force_orphan: true
