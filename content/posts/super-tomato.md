@@ -33,4 +33,4 @@ else:
 ```
 
 ## writeup
-今回の問題では$a^choice$
+後で追加します。
