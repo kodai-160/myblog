@@ -10,8 +10,10 @@
   "dependencies": {
     "chokidar": "^3.6.0",
     "gray-matter": "^4.0.3",
+    "katex": "^0.16.27",
     "markdown-it": "^14.1.0",
     "markdown-it-katex": "^2.0.3",
+    "markdown-it-texmath": "^0.8.0",
     "ws": "^8.18.0"
   }
 }

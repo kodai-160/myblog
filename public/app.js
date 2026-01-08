@@ -68,3 +68,4 @@ if (tagFilters) {
   const initialTag = getTagFromURL();
   applyFilter(initialTag || "all");
 }
+

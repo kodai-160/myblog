@@ -2,7 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 import MarkdownIt from "markdown-it";
-import markdownItKatex from "markdown-it-katex";
+import texmath from "markdown-it-texmath";
+import katex from "katex";
 
 const ROOT = process.cwd();
 const CONTENT_DIR = path.join(ROOT, "content", "posts");
@@ -13,7 +14,7 @@ const md = new MarkdownIt({
   html: true,
   linkify: true,
   typographer: true
-}).use(markdownItKatex);
+}).use(texmath, { engine: katex, delimiters: 'all', katexOptions: { throwOnError: false } });
 
 const loadConfig = async () => {
   const raw = await fs.readFile(path.join(ROOT, "site.config.json"), "utf8");
@@ -49,6 +50,7 @@ const layout = ({ title, description, content, config }) => `<!doctype html>
     <meta name="description" content="${description}" />
     <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" />
     <script src="/app.js" defer></script>
   </head>
   <body>
@@ -66,6 +68,8 @@ const layout = ({ title, description, content, config }) => `<!doctype html>
     <footer class="footer">
       <small>© ${new Date().getFullYear()} ${config.author}</small>
     </footer>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
   </body>
 </html>`;
 
@@ -151,6 +155,20 @@ const copyPublic = async () => {
   );
 };
 
+const copyContentImages = async () => {
+  const CONTENT_IMAGE_DIR = path.join(ROOT, "content", "image");
+  try {
+    const stat = await fs.stat(CONTENT_IMAGE_DIR);
+    if (stat.isDirectory()) {
+      const dest = path.join(DIST_DIR, "content", "image");
+      await fs.mkdir(path.dirname(dest), { recursive: true });
+      await fs.cp(CONTENT_IMAGE_DIR, dest, { recursive: true });
+    }
+  } catch {
+    // no images to copy
+  }
+};
+
 const readPosts = async () => {
   const files = await fs.readdir(CONTENT_DIR);
   const posts = await Promise.all(
@@ -168,12 +186,17 @@ const readPosts = async () => {
           tags = tags.split(",").map(t => t.trim());
         }
         
+        const rendered = md.render(content);
+        const thumbnailMatch = rendered.match(/<img[^>]+src="([^"]+)"/i);
+        const thumbnail = thumbnailMatch ? thumbnailMatch[1] : null;
+
         return {
           ...data,
           tags,
           slug,
           url,
-          html: md.render(content)
+          html: rendered,
+          thumbnail
         };
       })
   );
@@ -196,6 +219,7 @@ export const buildSite = async () => {
   await fs.rm(DIST_DIR, { recursive: true, force: true });
   await ensureDir(DIST_DIR);
   await copyPublic();
+  await copyContentImages();
   const posts = await readPosts();
   await writePostPages(posts, config);
   const indexHtml = buildIndex(posts, config);
