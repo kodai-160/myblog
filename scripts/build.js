@@ -14,7 +14,7 @@ const md = new MarkdownIt({
   html: true,
   linkify: true,
   typographer: true
-}).use(texmath, { engine: katex, delimiters: 'all', katexOptions: { throwOnError: false } });
+}).use(texmath, { engine: katex, delimiters: "dollars", katexOptions: { throwOnError: false } });
 
 const loadConfig = async () => {
   const raw = await fs.readFile(path.join(ROOT, "site.config.json"), "utf8");

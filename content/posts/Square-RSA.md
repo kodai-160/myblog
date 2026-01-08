@@ -32,24 +32,52 @@ c = 2324051484856303339788705686119810024459594278436311535257433739664636879063
 
 ## writeup
 今回与えられたファイルではRSA暗号が実装されています。<br>
-しかし、nが`n = p * p`で構成されていることが問題です。
-暗号文が`mod n = p * p`で計算されているので、復号化も同じことをやります。<br>
+しかし、nが$n = p^2$で構成されていることが問題です。
+暗号文がmod $n = p^2$で計算されているので、復号化も同じことをやります。<br>
 
 また、$n = p^2$ のときのオイラー関数は
+
 $$
 \varphi(p^2) = p^2 - p = p(p - 1)
 $$
 
-なので、秘密指数は
+になります。なので、秘密指数は
+
 $$
 d \equiv e^{-1} \pmod{p(p - 1)}
 $$
+
 で取り、最後は
+
 $$
 m \equiv c^d \pmod{p^2}
 $$
-です。
+
+となることによって求めることができます。
+以下がsolverです。
+
+```py
+import math
+from Crypto.Util.number import long_to_bytes
+
+n = 66579369096057840799275275806551056825754855027296356876541315429102104919401
+c = 23240514848563033397887056861198100244595942784363115352574337396646368790635
+e = 65537
+
+p = math.isqrt(n)
+assert p * p == n, "n is not a perfect square (not p^2)"
+
+phi = p * (p - 1)
+
+d = pow(e, -1, phi)
+
+m = pow(c, d, n)
+
+pt = long_to_bytes(m)
+print(pt)
+print(pt.decode(errors="replace"))
+
+```
 
 
-
-FLAG : `Alpaca{b1g_1nt3ger_v4l_h3x_f0rmat_1s_cl34n_b64_p4dd1ng_is_cool}`
+FLAG : `Alpaca{Euler_phi_is_useful!!!}`
